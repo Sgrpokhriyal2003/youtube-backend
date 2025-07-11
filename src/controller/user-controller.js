@@ -1,7 +1,7 @@
 import User from '../models/user.js'
 import bcrypt from 'bcryptjs'
 import cloudinary from '../config/cloudinary.js'
-
+import jwt from 'jsonwebtoken'
 
 export const register = async(req, res) => {
     try{
@@ -37,6 +37,57 @@ export const register = async(req, res) => {
 }
 
 export const login = async(req, res) => {
-    res.json({message: "signin page"})
+    try{
+        const {email, password} = req.body
+        if(!email || !password){
+            return res.status(400).json({
+                message: "email and password are required!"
+            })
+        }
+
+        const existUser = await User.findOne({email})
+        if(!existUser){
+            return res.status(404).json({
+                success: false,
+                error: "user not found!"
+            })
+        }
+
+        const isValid = await bcrypt.compare(password, existUser.password)
+        if(!isValid){
+            return res.status(400).json({
+                success: false,
+                error: "invalid email or password!"
+            })
+        }
+
+        const token = jwt.sign({
+            _id: existUser._id,
+            channelName: existUser.channelName,
+            email: existUser.email,
+            phone: existUser.phone,
+            logoId: existUser.logoId
+        }, process.env.JWT_SECRET, {expiresIn: "1h"})
+
+        res.status(200).json({
+            _id: existUser._id,
+            channelName: existUser.channelName,
+            email: existUser.email,
+            phone: existUser.phone,
+            logoId: existUser.logoId,
+            logoUrl: existUser.logoUrl,
+            subscribers: existUser.subscribers,
+            subscribedChannels: existUser.subscribedChannels,
+            accessToken: token
+        })
+    }
+    catch(err){
+        res.status(500).json({
+            success: false,
+            error: 'something went wrong, server side error!',
+            error: err.message
+        })
+    }
 
 }   
+
