@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     channelName: {
         type: String,
         required: true,
@@ -31,10 +30,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    subscribedChannels: {
+    subscribedChannels: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    }
+    }]    
 }, {timestamps: true});
 
 const User = mongoose.model("User", userSchema)
