@@ -10,12 +10,6 @@ export const authMiddleware = async(req, res, next) => {
         }
 
         const decodedUser = jwt.verify(token, process.env.JWT_SECRET)
-        if(!decodedUser){
-            return res.status(400).json({
-                error: "token is invalid"
-            })
-        }
-
         req.user = decodedUser
         next();
     }
