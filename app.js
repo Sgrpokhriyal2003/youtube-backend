@@ -8,6 +8,7 @@ dotenv.config()
 //local import 
 import { connectDB } from './src/config/db.js'
 import  userRoutes  from './src/routes/user-route.js'
+import  videoRoutes from './src/routes/video-route.js'
 
 const port = process.env.PORT || 3001
 const app = express()
@@ -29,6 +30,7 @@ app.get("/home", (req, res) => {
 
 //routes
 app.use("/api/v1/user", userRoutes)
+app.use("/api/v1/video", videoRoutes)
 
 connectDB()
 .then(() => {
