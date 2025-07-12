@@ -110,3 +110,20 @@ export const deleteVideo = async(req, res) => {
         res.status(500).json({message: 'something went wrong!', error: err.message});
     }
 }
+
+export const getVideos = async(req, res) => {
+    try{
+        const videos = await Video.find().sort({createdAt:-1})
+        res.status(200).json({
+            success: true,
+            data: videos
+        })
+    }
+    catch(error){
+        res.status(500).json({
+            message: "something went wrong!",
+            error: error.message
+        })
+    }
+}
+
