@@ -127,3 +127,19 @@ export const getVideos = async(req, res) => {
     }
 }
 
+export const myVideo = async(req, res) => {
+    try{
+        const videos = await Video.find({user_id: req.user._id}).sort({createdAt:-1})
+        if(!videos){
+            return res.status(404).json({message: "No Video Found With This User Id"})
+        }
+
+        res.status(200).json(videos)
+    }   
+    catch(error){
+        res.status(500).json({
+            message: "something went wrong!",
+            error: error.message
+        })
+    }
+}
