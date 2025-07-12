@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const commentSchema = new mongoose.Schema({
 
-    videoId: {
+    video_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Video",
         required: true
