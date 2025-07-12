@@ -26,15 +26,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    subscribers:{
-        type: Number,
-        default: 0,
-    },
     subscribedChannels: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }]    
 }, {timestamps: true});
+
+userSchema.virtual("subscribers").get(function(){
+    return this.subscribedChannels.length
+})
+
+
+userSchema.set("toJSON", {
+    virtuals: true,
+})
 
 const User = mongoose.model("User", userSchema)
 export default User

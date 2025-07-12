@@ -119,15 +119,21 @@ export const subscribed = async(req, res) => {
             return res.status(400).json({error: "you cannot subscribe to yourself"})
         }
 
-        await User.findByIdAndUpdate(req.user._id, {
+        const currentUser = await User.findByIdAndUpdate(req.user._id, {
             $addToSet: {subscribedChannels: channelId},
         });
 
-        await User.findByIdAndUpdate(channelId, {
+        const subscribedUser =  await User.findByIdAndUpdate(channelId, {
             $inc: {subscribers: 1},
         })
 
-        res.status(200).json({message: "subscribed successfully!"})
+        res.status(200).json({
+            message: "subscribed successfully!",
+            data: {
+                currentUser,
+                subscribedUser
+            }
+        })
     }
     catch(error){
         res.status(500).json({
