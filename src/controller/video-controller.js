@@ -203,30 +203,30 @@ export const getVideoById = async(req, res) => {
     }
 }
 
-export const getViewsCount = async(req, res) => {
-    try{
-        const videoId = req.params.id
-        const userId = req.user._id
-        const video = await Video.findById(videoId)
-        if(!video){
-            return res.status(404).json({message: 'video not found!'})
-        }
+// export const getViewsCount = async(req, res) => {
+//     try{
+//         const videoId = req.params.id
+//         const userId = req.user._id
+//         const video = await Video.findById(videoId)
+//         if(!video){
+//             return res.status(404).json({message: 'video not found!'})
+//         }
 
-        if(video.user_id.toString() !== userId.toString()){
-            const alreadyViewed = video.viewedBy.includes(userId)
-            if(!alreadyViewed){
-                video.viewedBy.push(userId)
-                video.view += 1
-                await video.save()
-            }
-        }
+//         if(video.user_id.toString() !== userId.toString()){
+//             const alreadyViewed = video.viewedBy.includes(userId)
+//             if(!alreadyViewed){
+//                 video.viewedBy.push(userId)
+//                 video.view += 1
+//                 await video.save()
+//             }
+//         }
 
-        res.status(200).json(video)
-    }
-    catch(error){
-        res.status(500).json({
-            message: "something went wrong",
-            error: error.message
-        })
-    }
-}
+//         res.status(200).json(video)
+//     }
+//     catch(error){
+//         res.status(500).json({
+//             message: "something went wrong",
+//             error: error.message
+//         })
+//     }
+// }
