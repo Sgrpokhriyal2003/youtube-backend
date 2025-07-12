@@ -158,6 +158,19 @@ export const getVideoByCategory = async(req, res) => {
     }
 }
 
+export const getVideoByTag = async(req, res) => {
+    try{
+        const tag = req.params.tag;
+        const video = await Video.find({tags: tag}).sort({createdAt: -1})
+        res.status(200).json(video)
+    }
+    catch(error){
+        res.status(500).json({
+            message: "something went wrong!",
+            err: error.message
+        })
+    }
+}
 
 
 
