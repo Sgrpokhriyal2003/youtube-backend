@@ -91,3 +91,47 @@ export const login = async(req, res) => {
 
 }   
 
+export const updateProfile = async(req, res) => {
+    try{
+        const {channelName, phone} = req.body;
+        let updatedData = {channelName, phone}
+
+        if(req.files && req.files.logoUrl){
+            const uploadedImage = await cloudinary.uploader.upload(req.files.logoUrl.tempFilePath);
+            updatedData.logoUrl = uploadedImage.secure_url,
+            updatedData.logoId = uploadedImage.public_id
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true})
+        res.status(200).json({message: "Profile Updated Successully!", updatedUser})
+    }
+    catch(err){
+        res.status(500).json({
+            message: "server side error!"
+        })
+    }
+}
+
+export const subscribed = async(req, res) => {
+    try{
+        const {channelId} = req.body
+        if(req.user._id === channelId){
+            return res.status(400).json({error: "you cannot subscribe to yourself"})
+        }
+
+        await User.findByIdAndUpdate(req.user._id, {
+            $addToSet: {subscribedChannels: channelId},
+        });
+
+        await User.findByIdAndUpdate(channelId, {
+            $inc: {subscribers: 1},
+        })
+
+        res.status(200).json({message: "subscribed successfully!"})
+    }
+    catch(error){
+        res.status(500).json({
+            message: "server side error!"
+        })
+    }
+}

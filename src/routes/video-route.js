@@ -17,6 +17,5 @@ router.post("/like", authMiddleware, likeVideo)
 router.post("/dislike", authMiddleware, dislikeVideo)
 router.post('/view', authMiddleware, getViewsCount)
 
-//router.get("/:id", authMiddleware, getViewsCount);
 
 export default router
