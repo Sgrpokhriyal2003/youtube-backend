@@ -143,3 +143,37 @@ export const myVideo = async(req, res) => {
         })
     }
 }
+
+export const getVideoByCategory = async(req, res) => {
+    try{
+        const category = req.params.category //url parameter
+        const videos = await Video.find({category}).sort({createdAt: -1})
+        res.status(200).json(videos)
+    }
+    catch(error){
+        res.status(500).json({
+            message: 'something went wrong',
+            fetchError: error.message
+        })
+    }
+}
+
+
+
+
+// export const getVideoById = async(req, res) => {
+//     try{
+//         const videoId = req.params.id
+//         const userId = req.user._id
+        
+        
+
+//     }
+//     catch(error){
+//         res.status(500).json({
+//             message: "something went wrong",
+//             error: error.message
+//         })
+//     }
+// }
+
