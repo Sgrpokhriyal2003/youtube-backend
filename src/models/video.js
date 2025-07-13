@@ -20,7 +20,7 @@ const videoSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    videoId: {
+    videoId:{
         type: String,
         required: true,
         trim: true,
@@ -70,3 +70,12 @@ videoSchema.set("toJSON", {
 
 const Video = new mongoose.model("Video", videoSchema)
 export default Video
+
+/**
+ * 
+ *  // videoId: {
+    //     type: String,
+    //     required: true,
+    //     trim: true,
+    // },
+ */

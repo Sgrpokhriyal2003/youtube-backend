@@ -25,7 +25,7 @@ app.use(fileUpload({
 app.get("/home", (req, res) => {
     res.status(200).json({
         success: true,
-        message: "welcome to youtube🧑‍💻"
+        message: "welcome to youtube backend api🧑‍💻"
     })
 })
 

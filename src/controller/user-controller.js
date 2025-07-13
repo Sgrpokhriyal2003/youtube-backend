@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 
 export const register = async(req, res) => {
     try{
-        console.log('request coming');
+        //console.log('request coming');
         const {email, phone, password, channelName} = req.body
         const hashCode = await bcrypt.hash(password, 10)
         const uploadImage = await cloudinary.uploader.upload(

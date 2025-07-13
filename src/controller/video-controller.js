@@ -89,8 +89,8 @@ export const update = async(req, res) => {
 
 export const deleteVideo = async(req, res) => {
     try{
-        const videoId = req.params.id;
-        const video = await Video.findById(videoId)
+        const Id = req.params.id;
+        const video = await Video.findById(Id)
         if(!video){
             return res.status(404).json({message: "video does not exists"})
         }
@@ -102,7 +102,7 @@ export const deleteVideo = async(req, res) => {
         await cloudinary.uploader.destroy(video.videoId, {resource_type: "video"})
         await cloudinary.uploader.destroy(video.thumbnailId)
 
-        await Video.findByIdAndDelete(videoId)
+        await Video.findByIdAndDelete(Id)
         res.status(200).json({message: "video deleted successfully!"});
 
     }
@@ -174,26 +174,27 @@ export const getVideoByTag = async(req, res) => {
 
 export const getVideoById = async(req, res) => {
     try{
-       const videoId = req.params.id
+       const Id = req.params.id
        const userId = req.user._id
 
-       const video = await Video.findById(videoId)
+       const video = await Video.findById(Id)
 
        if(!video){
         return res.status(404).json({message: "video not found!"})
        }
 
-      // if(video.user_id.toString() !== userId.toString()){
-        await Video.findByIdAndUpdate(
-            videoId,
+       if(video.user_id.toString() !== userId.toString()){
+            await Video.findByIdAndUpdate(
+            Id,
             {
                 $addToSet: {viewedBy: userId},
             },
             {new: true}
         )
+       }
 
-
-       res.status(200).json(video)
+       const updatedVideo = await Video.findById(Id)
+       res.status(200).json(updatedVideo)
     }
     catch(error){
         res.status(500).json({
@@ -206,12 +207,27 @@ export const getVideoById = async(req, res) => {
 export const likeVideo = async(req, res) => {
     try{
 
-        const {videoId} = req.body
-        const video = await Video.findByIdAndUpdate(videoId, {
+        const {id} = req.body
+
+        const video = await Video.findById(id);
+
+         if(!video) {
+            return res.status(404).json({ message: "Video not found" });
+        }
+
+        if(video.user_id.toString() === req.user._id.toString()){
+            return res.status(403).json({message: "you can't like your own video"});
+        }
+
+        const updatedVideo = await Video.findByIdAndUpdate(id, 
+            {
             $addToSet: {likedBy: req.user._id},
             $pull: {dislikedBy: req.user._id}
-        })
-        res.status(200).json({message: "liked the video", video})
+        }, {new: true})
+          
+       
+
+        res.status(200).json({message: "liked the video", updatedVideo})
     }
     catch(error){
         res.status(500).json({
@@ -223,8 +239,18 @@ export const likeVideo = async(req, res) => {
 
 export const dislikeVideo = async(req, res) => {
     try{
-        const {videoId} = req.body
-        await Video.findByIdAndUpdate(videoId,{
+        const {Id} = req.body
+
+        const video = await Video.findById(Id);
+        if(!video) {
+            return res.status(404).json({ message: "Video not found" });
+        }
+
+        if(video.user_id.toString() === req.user._id.toString()){
+            return res.status(403).json({message: "you can't dislike your own video"});
+        }
+
+        await Video.findByIdAndUpdate(Id,{
             $addToSet: {dislikedBy: req.user._id},
             $pull: {likedBy: req.user._id}
         })

@@ -32,8 +32,8 @@ const userSchema = new mongoose.Schema({
     }]    
 }, {timestamps: true});
 
-userSchema.virtual("subscribers").get(function(){
-    return this.subscribedChannels.length
+userSchema.virtual("subscribeCount").get(function (){
+    return (this.subscribedChannels || []).length;
 })
 
 
