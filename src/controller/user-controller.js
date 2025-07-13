@@ -121,11 +121,11 @@ export const subscribed = async(req, res) => {
 
         const currentUser = await User.findByIdAndUpdate(req.user._id, {
             $addToSet: {subscribedChannels: channelId},
-        });
+        }, {new: true});
 
         const subscribedUser =  await User.findByIdAndUpdate(channelId, {
-            $inc: {subscribers: 1},
-        })
+            $inc: {subscribeCount: 1},
+        }, {new: true})
 
         res.status(200).json({
             message: "subscribed successfully!",

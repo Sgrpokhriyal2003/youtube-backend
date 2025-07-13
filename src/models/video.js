@@ -61,7 +61,7 @@ videoSchema.virtual("dislikes").get(function(){
 })
 
 videoSchema.virtual("views").get(function(){
-    return this.viewedBy.length
+    return (this.viewedBy || []).length
 })
 
 videoSchema.set("toJSON", {

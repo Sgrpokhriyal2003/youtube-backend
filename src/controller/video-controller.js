@@ -1,6 +1,7 @@
 import Video from '../models/video.js'
 import User from '../models/user.js'
 import cloudinary from '../config/cloudinary.js'
+import { truncates } from 'bcryptjs'
 
 export const upload = async(req, res) => {
     try{
@@ -267,8 +268,8 @@ export const dislikeVideo = async(req, res) => {
 
 export const getViewsCount = async(req, res) => {
     try{
-        const {videoId} = req.body
-        const video = await Video.findById(videoId)
+        const {id} = req.body
+        const video = await Video.findById(id)
 
         const userId = req.user._id;
         if(!video){
@@ -276,12 +277,12 @@ export const getViewsCount = async(req, res) => {
         }
 
         if(video.user_id.toString() !== userId.toString()){
-            await Video.findByIdAndUpdate(videoId, {
+            const updatedVideo = await Video.findByIdAndUpdate(id, {
                 $addToSet: {viewedBy: userId}
-            })
+            }, {new: true})
         }
 
-        res.status(200).json(video)
+        res.status(200).json(updatedVideo)
     }
     catch(error){
         res.status(500).json({
